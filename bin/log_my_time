@@ -1,0 +1,76 @@
+#!/usr/bin/env ruby
+
+require File.expand_path '../lib/githubrepo', File.dirname(__FILE__)
+require 'commander/import'
+require 'githubrepo/version'
+
+program :name, 'githubrepo'
+program :version, '0.3.0'
+program :description, 'Create GitHub repositories from the command line.
+
+OSX: repository URL is automatically copied to clipboard.
+Linux: install xclip (sudo apt-get xclip) and URL will auto copy to clipboard.
+Windows: run "gem install ffi" and URL will auto copy to clipboard.'
+
+program :help, 'Author', 'Elikem Adadevoh <elikem@gmail.com>'
+
+command :create do |c|
+  c.syntax = 'githubrepo create [options]'
+
+  c.description = 'githubrepo create REPO_NAME -d REPO_DESCRIPTION --ssh [optional, will give you the SSH link instead of HTTP]'
+
+  c.example 'usage', 'githubrepo create REPO_NAME'
+  c.example 'shorthand', 'githubrepo REPO_NAME'
+  c.example 'description', 'githubrepo create REPO_NAME -d "short description"'
+  c.example 'SSH URL', 'githubrepo REPO_NAME -s'
+
+  c.option '--description STRING', String, 'A short description of the repository'
+  c.option '--ssh', 'Gives the link back as SSH instead of HTTP'
+
+  c.action do |args, options|
+    repository = args.shift
+    description = options.description
+    wants_ssh = options.ssh
+
+    # check for repository argument
+    if repository.nil?
+      puts 'repository'
+      puts 'invalid option -- githubrepo create REPO_NAME'
+      exit
+    end
+
+    # get and check name
+    username = ask "'Username for 'https://github.com': "
+    if username.length == 0
+      puts 'invalid option -- please enter a username'
+      exit
+    end
+
+    # set password
+    password = ask('Password: ') { |char| char.echo = false }
+
+    # package attributes for http api payload
+    cli({ :repository => repository, :description => description, :wants_ssh => wants_ssh, :username => username, :password => password })
+  end
+end
+
+command :version do |v|
+  v.syntax = 'githubrepo version [options]'
+  v.description = 'githubrepo version'
+
+  v.example 'usage', 'githubrepo version'
+
+  v.action do |args, options|
+    version = args.shift
+  end
+
+  # outputs version number
+  puts "Githubrepo #{Githubrepo::VERSION}"
+end
+
+# set default action for gem
+default_command :create
+
+def cli(attributes)
+  Githubrepo.create(attributes)
+end
