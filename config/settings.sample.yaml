@@ -1,0 +1,9 @@
+toggl:
+  token:
+  workspace_id:
+  user_agent:
+  default_log_tag: 'logged'
+
+jira:
+  username:
+  password:

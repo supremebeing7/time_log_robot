@@ -1,11 +1,10 @@
 #!/usr/bin/env ruby
 
-require File.expand_path '../lib/githubrepo', File.dirname(__FILE__)
 require 'commander/import'
-require 'githubrepo/version'
+require 'time_log_robot/version'
 
-program :name, 'githubrepo'
-program :version, '0.3.0'
+program :name, 'time_log_robot'
+program :version, TimeLogRobot::VERSION
 program :description, 'Create GitHub repositories from the command line.
 
 OSX: repository URL is automatically copied to clipboard.
@@ -15,14 +14,14 @@ Windows: run "gem install ffi" and URL will auto copy to clipboard.'
 program :help, 'Author', 'Elikem Adadevoh <elikem@gmail.com>'
 
 command :create do |c|
-  c.syntax = 'githubrepo create [options]'
+  c.syntax = 'time_log_robot create [options]'
 
-  c.description = 'githubrepo create REPO_NAME -d REPO_DESCRIPTION --ssh [optional, will give you the SSH link instead of HTTP]'
+  c.description = 'time_log_robot create REPO_NAME -d REPO_DESCRIPTION --ssh [optional, will give you the SSH link instead of HTTP]'
 
-  c.example 'usage', 'githubrepo create REPO_NAME'
-  c.example 'shorthand', 'githubrepo REPO_NAME'
-  c.example 'description', 'githubrepo create REPO_NAME -d "short description"'
-  c.example 'SSH URL', 'githubrepo REPO_NAME -s'
+  c.example 'usage', 'time_log_robot create REPO_NAME'
+  c.example 'shorthand', 'time_log_robot REPO_NAME'
+  c.example 'description', 'time_log_robot create REPO_NAME -d "short description"'
+  c.example 'SSH URL', 'time_log_robot REPO_NAME -s'
 
   c.option '--description STRING', String, 'A short description of the repository'
   c.option '--ssh', 'Gives the link back as SSH instead of HTTP'
@@ -35,7 +34,7 @@ command :create do |c|
     # check for repository argument
     if repository.nil?
       puts 'repository'
-      puts 'invalid option -- githubrepo create REPO_NAME'
+      puts 'invalid option -- time_log_robot create REPO_NAME'
       exit
     end
 
@@ -55,10 +54,10 @@ command :create do |c|
 end
 
 command :version do |v|
-  v.syntax = 'githubrepo version [options]'
-  v.description = 'githubrepo version'
+  v.syntax = 'time_log_robot version [options]'
+  v.description = 'time_log_robot version'
 
-  v.example 'usage', 'githubrepo version'
+  v.example 'usage', 'time_log_robot version'
 
   v.action do |args, options|
     version = args.shift
