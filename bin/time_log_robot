@@ -1,0 +1,60 @@
+#!/usr/bin/env ruby
+
+require 'commander/import'
+require 'time_log_robot/version'
+
+program :name, 'time_log_robot'
+program :version, TimeLogRobot::VERSION
+program :description, 'Logs work from a time tracker tool to a project
+  management tool. Currently only supports Toggl and JIRA.'
+
+program :help, 'Author', 'Mark J. Lehman <markopolo@gmail.com>'
+
+command :run do |c|
+  c.syntax = 'time_log_robot run [options]'
+
+  c.description = 'Logs your time with optional since (default is the previous Saturday).'
+
+  c.example 'usage', 'time_log_robot run'
+  c.example 'shorthand', 'time_log_robot'
+  c.example 'since', 'time_log_robot run --since "2015-10-21"'
+
+  c.option '--since DATE', Date, 'The date from which to log time entries. Must be in YYYY-MM-DD format. Default is the previous Saturday.'
+
+  c.action do |args, options|
+binding.pry
+    # get and check name
+    username = ask "'Username for 'https://github.com': "
+    if username.length == 0
+      puts 'invalid option -- please enter a username'
+      exit
+    end
+
+    # set password
+    password = ask('Password: ') { |char| char.echo = false }
+
+    # package attributes for http api payload
+    cli({ :repository => repository, :description => description, :wants_ssh => wants_ssh, :username => username, :password => password })
+  end
+end
+
+command :version do |v|
+  v.syntax = 'time_log_robot version [options]'
+  v.description = 'time_log_robot version'
+
+  v.example 'usage', 'time_log_robot version'
+
+  v.action do |args, options|
+    version = args.shift
+  end
+
+  # outputs version number
+  puts "TimeLogRobot #{TimeLogRobot::VERSION}"
+end
+
+# set default action for gem
+default_command :run
+
+def run(attributes)
+  TimeLogRobot.run(attributes)
+end
