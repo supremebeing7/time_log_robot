@@ -1,11 +1,13 @@
 module TimeLogRobot
   module Toggl
     class Tagger
+      include HTTParty
+
       attr_accessor :token, :tags
 
       base_uri 'https://toggl.com/api/v8/time_entries'
 
-      def initialize(tags:[ENV['DEFAULT_LOG_TAG']])
+      def initialize(tags:[ENV['TOGGL_DEFAULT_LOG_TAG']])
         @token = ENV['TOGGL_TOKEN']
         @tags = tags
       end

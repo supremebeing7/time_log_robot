@@ -1,6 +1,10 @@
+require 'active_support/core_ext/date/calculations'
+
 module TimeLogRobot
   module Toggl
     class Report
+      include HTTParty
+
       attr_accessor :token, :workspace_id, :user_agent
 
       base_uri 'https://toggl.com/reports/api/v2'
@@ -11,7 +15,8 @@ module TimeLogRobot
         @user_agent = ENV['TOGGL_USER_AGENT']
       end
 
-      def fetch(since: Time.now.beginning_of_week(:saturday))
+      def fetch(since: nil)
+        since ||= Date.today.beginning_of_week(:saturday).to_time
         self.class.get('/details', basic_auth: auth, query: query(since))
       end
 

@@ -1,11 +1,13 @@
 module TimeLogRobot
   module JIRA
     class WorkLogger
+      include HTTParty
+
       attr_accessor :username, :password, :time_entries, :log_tags
 
       base_uri 'https://hranswerlink.atlassian.net/rest/api/2'
 
-      def initialize(time_entries:, log_tags: [ENV['DEFAULT_LOG_TAG']])
+      def initialize(time_entries:, log_tags: [ENV['TOGGL_DEFAULT_LOG_TAG']])
         @username = ENV['JIRA_USERNAME']
         @password = ENV['JIRA_PASSWORD']
         @time_entries = time_entries
@@ -27,20 +29,20 @@ module TimeLogRobot
       def log(entry)
         issue_key = parse_issue_key(entry)
         payload = build_payload(entry)
-        p "Logging #{human_readable_duration(parse_duration(entry))}"
-        p "starting on #{parse_start(entry)}"
-        p "to #{parse_issue_key(entry)}"
-        p "with comment #{parse_comment(entry)}" unless parse_comment(entry).nil?
+        puts "Attempting to log #{human_readable_duration(parse_duration(entry))}"
+        puts "starting on #{parse_start(entry)}"
+        puts "to #{entry['description']}"
+        puts "with comment #{parse_comment(entry)}" unless parse_comment(entry).nil?
         response = self.class.post("/issue/#{issue_key}/worklog", basic_auth: auth, headers: headers, body: payload)
         if response.success?
-          p "Success"
-          p '*' * 20
+          puts "Success"
+          puts '*' * 20
           set_entry_as_logged(entry)
         else
-          p "Failed! Response form JIRA:"
-          pp response
-          p "(Hint: Did you forget to put the JIRA issue key in your Toggl entry?"
-          p '*' * 20
+          puts "Failed! Response from JIRA:"
+          puts response
+          puts "(Hint: Did you forget to put the JIRA issue key in your Toggl entry?"
+          puts '*' * 20
         end
       end
 

@@ -1,12 +1,17 @@
 #!/usr/bin/env ruby
 
 require 'commander/import'
+require 'time_log_robot'
 require 'time_log_robot/version'
+require 'time_log_robot/toggl/tagger'
+require 'time_log_robot/toggl/report'
+require 'time_log_robot/jira/payload_builder'
+require 'time_log_robot/jira/work_logger'
 
 program :name, 'time_log_robot'
 program :version, TimeLogRobot::VERSION
 program :description, 'Logs work from a time tracker tool to a project
-  management tool. Currently only supports Toggl and JIRA.'
+management tool. Currently only supports Toggl and JIRA.'
 
 program :help, 'Author', 'Mark J. Lehman <markopolo@gmail.com>'
 
@@ -19,42 +24,43 @@ command :run do |c|
   c.example 'shorthand', 'time_log_robot'
   c.example 'since', 'time_log_robot run --since "2015-10-21"'
 
-  c.option '--since DATE', Date, 'The date from which to log time entries. Must be in YYYY-MM-DD format. Default is the previous Saturday.'
+  c.option '--since STRING', String, 'The date from which to log time entries. Must be in YYYY-MM-DD format. Default is the previous Saturday.'
 
   c.action do |args, options|
-binding.pry
-    # get and check name
-    username = ask "'Username for 'https://github.com': "
-    if username.length == 0
-      puts 'invalid option -- please enter a username'
-      exit
+    missing_envars = {}
+
+    envar_keys = %w(
+      TOGGL_TOKEN
+      TOGGL_WORKSPACE_ID
+      TOGGL_USER_AGENT
+      TOGGL_DEFAULT_LOG_TAG
+      JIRA_USERNAME
+      JIRA_PASSWORD
+    )
+
+    envar_keys.each do |key|
+      unless ENV[key]
+        ENV[key] = ask "Enter your #{key} (see README for how to find it): "
+        if ENV[key].length == 0
+          puts 'Invalid. This is a required field.'
+          exit
+        end
+        missing_envars[key] = ENV[key]
+      end
     end
 
-    # set password
-    password = ask('Password: ') { |char| char.echo = false }
+    since = DateTime.parse(options.since).to_s unless options.since.nil?
 
-    # package attributes for http api payload
-    cli({ :repository => repository, :description => description, :wants_ssh => wants_ssh, :username => username, :password => password })
+    TimeLogRobot.start(since)
+
+    if missing_envars.any?
+      puts "\nTo avoid entering setup information each time, store it in environment variables:"
+      missing_envars.each_pair do |key, value|
+        puts "\texport #{key}=#{value}"
+      end
+    end
   end
-end
-
-command :version do |v|
-  v.syntax = 'time_log_robot version [options]'
-  v.description = 'time_log_robot version'
-
-  v.example 'usage', 'time_log_robot version'
-
-  v.action do |args, options|
-    version = args.shift
-  end
-
-  # outputs version number
-  puts "TimeLogRobot #{TimeLogRobot::VERSION}"
 end
 
 # set default action for gem
 default_command :run
-
-def run(attributes)
-  TimeLogRobot.run(attributes)
-end
