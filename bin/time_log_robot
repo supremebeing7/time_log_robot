@@ -7,6 +7,7 @@ require 'time_log_robot/toggl/tagger'
 require 'time_log_robot/toggl/report'
 require 'time_log_robot/jira/payload_builder'
 require 'time_log_robot/jira/work_logger'
+require 'yaml'
 
 program :name, 'time_log_robot'
 program :version, TimeLogRobot::VERSION
@@ -28,75 +29,86 @@ command :run do |c|
 
   c.option '--since STRING', String, 'The date from which to log time entries. Must be in YYYY-MM-DD format. Default is the previous Saturday.'
 
+  c.option '--overwrite', 'Your settings are automatically written to a file - `~/.time_log_robot_settings.yml` - to be used again the next time you invoke the robot. Use this flag if you need to overwrite those settings.'
+
   c.action do |args, options|
     if options.inputs_help
-      print inputs_help
+      print_inputs_help
     else
-      missing_envars = {}
+      create_settings_file_if_nonexistent
 
-      envars = %w(
-        TOGGL_TOKEN
-        TOGGL_WORKSPACE_ID
-        TOGGL_USER_AGENT
-        TOGGL_DEFAULT_LOG_TAG
-        JIRA_USERNAME
-        JIRA_PASSWORD
-      )
+      fetch_envars_from_config unless options.overwrite
 
-      envars.each do |key|
-        unless ENV[key]
-          ENV[key] = ask "Enter your #{key} (see README for how to find it): " do |char|
-            char.echo = '*' if key =~ /password|token/i
-          end
-          if ENV[key].length == 0
-            puts 'Invalid. This is a required field.'
-            exit
-          end
-          missing_envars[key] = ENV[key]
-        end
-      end
+      missing_envars = get_missing_envars
 
       since = DateTime.parse(options.since).to_s unless options.since.nil?
 
       TimeLogRobot.start(since)
 
-      if missing_envars.any?
-        puts "\nTo avoid entering setup information each time, store it in environment variables:"
-        missing_envars.each_pair do |key, value|
-          puts "\texport #{key}=#{value}"
-        end
-      end
+      write_missing_envars(missing_envars) if missing_envars.any?
     end
   end
 end
 
-def inputs_help
-  "
-  TOGGL_TOKEN
-    In your Toggl account, go to your profile page and look for the API token at the bottom.
+def print_inputs_help
+  TimeLogRobot.envars_help.each_pair do |envar, help_text|
+    puts envar
+    puts help_text
+  end
+end
 
-  TOGGL_WORKSPACE_ID
-    This is a little trickier. Your workspaces usually only show a human-readable name to you in Toggl's UI, and here you need the workspace machine ID. But you can do a curl request to find it like this (replacing TOGGL_TOKEN with your token from above):
+def get_missing_envars
+  missing_envars = {}
 
-  \tcurl -v -u TOGGL_TOKEN:api_token \ -X GET https://www.toggl.com/api/v8/workspaces
+  TimeLogRobot.envars.each do |key|
+    string_key = key.to_s
+    unless ENV[string_key]
+      ENV[string_key] = ask "Enter your #{string_key}: " do |char|
+        char.echo = '*' if string_key =~ /password|token/i
+      end
+      if ENV[string_key].length == 0
+        puts 'Invalid input. This is a required field.'
+        exit
+      end
+      missing_envars[string_key] = ENV[string_key]
+    end
+  end
 
-    Look at the result and find the id given for the workspace you want to use.
+  return missing_envars
+end
 
-  TOGGL_USER_AGENT
-    This is your Toggl username, usually your email.
+def fetch_envars_from_config
+  return unless envars = YAML.load_file(settings_file_path)
+  envars.each_pair do |key, value|
+    ENV[key.upcase] = value
+  end
+end
 
-  TOGGL_DEFAULT_LOG_TAG
-    This is the tag name you would like to use for tagging your Toggl time entries as they are logged to JIRA.
+def write_missing_envars(missing_envars={})
+  puts "\nTo avoid entering setup information each time, the following configuration has been stored in `#{settings_file_path}`:"
+  missing_envars.each_pair do |key, value|
+    if key =~ /password|token/i
+      puts "\t#{key}=[FILTERED]"
+    else
+      puts "\t#{key}=#{value}"
+    end
 
-  JIRA_USERNAME
-    This is your JIRA username, which is not an email, but usually your email minus the '@domain.com'
+    data = YAML.load_file(settings_file_path) || {}
+    data[key.downcase] = value
+    File.open(settings_file_path, 'w') { |f| YAML.dump(data, f) }
+  end
+end
 
-  JIRA_PASSWORD
-    I know there's a lot of jargon, but some of these are pretty self-explanatory
-    ┌─┐
-    ┴─┴
-    ಠ_ರೃ
-  \n"
+def create_settings_file_if_nonexistent
+  File.new(settings_file_path, "w+") unless File.exists?(settings_file_path)
+end
+
+def config_dir
+  File.join(TimeLogRobot.root, 'config')
+end
+
+def settings_file_path
+  File.join(config_dir, 'settings.yml')
 end
 
 # set default action for gem

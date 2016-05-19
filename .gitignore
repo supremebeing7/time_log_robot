@@ -1,2 +1,3 @@
-config/settings.yaml
+config/settings.yml
+config/settings.sample.yaml
 pkg/
