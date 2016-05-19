@@ -19,7 +19,11 @@ The simplest usage is just to invoke the robot:
 
     time_log_robot
 
-It will ask you for these details:
+By default, the robot will get all time entries since the previous Saturday. To specify a different time, run it with the optional `--since` flag (Note: the date given must be in YYYY-MM-DD format):
+
+    --since 2016-05-01
+
+On start, the robot will ask you for these details:
 
     TOGGL_TOKEN
     TOGGL_WORKSPACE_ID
@@ -27,6 +31,8 @@ It will ask you for these details:
     TOGGL_DEFAULT_LOG_TAG
     JIRA_USERNAME
     JIRA_PASSWORD
+
+### Configuration
 
 Here are some notes about how to find the appropriate values for those environment variables:
 
@@ -42,7 +48,9 @@ Here are some notes about how to find the appropriate values for those environme
 * **JIRA_USERNAME**: This is your JIRA username, which is not an email, but usually your email minus the "@domain.com"
 * **JIRA_PASSWORD**: I know there's a lot of jargon, but some of these are pretty self-explanatory. :trollface:
 
-For more details use help flag:
+### Help
+
+For more details use the help flag:
 
     time_log_robot --help
 

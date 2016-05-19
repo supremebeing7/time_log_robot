@@ -24,7 +24,7 @@ command :run do |c|
 
   c.example 'usage', 'time_log_robot run'
   c.example 'shorthand', 'time_log_robot'
-  c.example 'since', 'time_log_robot run --since "2015-10-21"'
+  c.example 'with optional parameter "since"', 'time_log_robot run --since "2015-10-21"'
 
   c.option '--since STRING', String, 'The date from which to log time entries. Must be in YYYY-MM-DD format. Default is the previous Saturday.'
 
