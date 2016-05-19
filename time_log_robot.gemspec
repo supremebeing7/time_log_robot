@@ -1,11 +1,12 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'time_log_robot/version'
+# require 'time_log_robot/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'time_log_robot'
-  spec.version       = TimeLogRobot::VERSION
+  spec.version       = '0.1.0'
+  # spec.version       = TimeLogRobot::VERSION
   spec.authors       = ['Mark J. Lehman']
   spec.email         = ['markopolo@gmail.com']
   spec.description   = %q{Automate time logging from tools like Toggl to project management software such as JIRA}
