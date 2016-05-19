@@ -103,12 +103,8 @@ def create_settings_file_if_nonexistent
   File.new(settings_file_path, "w+") unless File.exists?(settings_file_path)
 end
 
-def config_dir
-  File.join(TimeLogRobot.root, 'config')
-end
-
 def settings_file_path
-  File.join(config_dir, 'settings.yml')
+  File.join(TimeLogRobot.root, '.settings.yml')
 end
 
 # set default action for gem

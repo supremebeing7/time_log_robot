@@ -17,8 +17,14 @@ module TimeLogRobot
 
       def fetch(since: nil)
         since ||= Date.today.beginning_of_week(:saturday).to_time
-        self.class.get('/details', basic_auth: auth, query: query(since))
+        response = self.class.get('/details', basic_auth: auth, query: query(since))
+        if response.success?
+          response['data']
+        else
+          raise FetchError, response['error']
+        end
       end
+      class FetchError < Exception; end
 
       private
 
@@ -37,5 +43,6 @@ module TimeLogRobot
         }
       end
     end
+
   end
 end
