@@ -5,13 +5,7 @@ This is an integration between project management tools (like JIRA) and time log
 
 ## Installation
 
-~~Download this gem:~~ This is not yet on RubyGems, but once it is, you will be able to download like so:
-
     gem install time_log_robot
-
-Until then...
-
-    rake install
 
 ## Usage
 
