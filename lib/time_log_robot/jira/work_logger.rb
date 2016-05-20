@@ -39,12 +39,17 @@ module TimeLogRobot
           puts '*' * 20
           set_entry_as_logged(entry)
         else
+          puts response.code
           puts "Failed! Response from JIRA:"
-          puts response
-          puts "(Hint: Did you forget to put the JIRA issue key in your Toggl entry?"
+          if response.code == 401
+            raise UnauthorizedError, "Please check your username and password and try again"
+          elsif response.code == 404
+            puts "Not Found - Did you forget to put the JIRA issue key in your Toggl entry?"
+          end
           puts '*' * 20
         end
       end
+      class UnauthorizedError < Exception; end
 
       def set_entry_as_logged(entry)
         Toggl::Tagger.new(tags: log_tags).update(entry_id: entry['id'])
