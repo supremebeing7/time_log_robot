@@ -8,14 +8,14 @@ module TimeLogRobot
 
   def self.start(since)
     time_entries = fetch_time_entries(since)
-    JIRA::WorkLogger.new(time_entries: time_entries).log_all
+    JIRA::WorkLogger.log_all(time_entries: time_entries)
   end
 
   def self.fetch_time_entries(since)
     if since.nil?
-      Toggl::Report.new.fetch
+      Toggl::Report.fetch
     else
-      Toggl::Report.new.fetch(since: since)
+      Toggl::Report.fetch(since: since)
     end
   end
 
