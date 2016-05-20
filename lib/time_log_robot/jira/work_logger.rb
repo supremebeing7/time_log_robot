@@ -27,7 +27,7 @@ module TimeLogRobot
       end
 
       def log(entry)
-        issue_key = parse_issue_key(entry)
+        issue_key = JIRA::IssueKeyParser.parse(entry)
         payload = build_payload(entry)
         puts "Attempting to log #{human_readable_duration(parse_duration(entry))}"
         puts "starting on #{parse_start(entry)}"
