@@ -1,6 +1,35 @@
 # Time Log Robot
 ***Let the robot do your work time logging.***
 
+                  ,--.    ,--.
+                 ((O ))--((O ))
+               ,'_`--'____`--'_`.
+              _:  ____________  :_
+             | | ||::::::::::|| | |
+             | | ||::::::::::|| | |
+             | | ||::::::::::|| | |
+             |_| |/__________\| |_|
+               |________________|
+            __..-'            `-..__
+         .-| : .----------------. : |-.
+       ,\ || | |\______________/| | || /.
+      /`.\:| | ||  __  __  __  || | |;/,'\
+     :`-._\;.| || '--''--''--' || |,:/_.-':
+     |    :  | || .----------. || |  :    |
+     |    |  | || '----SSt---' || |  |    |
+     |    |  | ||   _   _   _  || |  |    |
+     :,--.;  | ||  (_) (_) (_) || |  :,--.;
+     (`-'|)  | ||______________|| |  (|`-')
+      `--'   | |/______________\| |   `--'
+             |____________________|
+              `.________________,'
+               (_______)(_______)
+               (_______)(_______)
+               (_______)(_______)
+               (_______)(_______)
+              |        ||        |
+              '--------''--------'
+
 This is an integration between project management tools (like JIRA) and time logging apps (like Toggl). Currently, it only works as an import from Toggl into JIRA.
 
 ## Installation
@@ -86,3 +115,12 @@ To run the app in IRB for debugging run
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request to Dev
+
+## License
+
+This program is provided under an MIT open source license, read the [MIT-LICENSE.txt](http://github.com/supremebeing7/jira_toggl_importer/blob/master/LICENSE.txt) file for details.
+
+
+## Copyright
+
+Copyright (c) 2016 Mark J. Lehman
