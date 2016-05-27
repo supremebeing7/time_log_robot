@@ -33,7 +33,7 @@ module TimeLogRobot
         end
 
         def log(entry)
-          issue_key = JIRA::IssueKeyParser.parse(entry)
+          issue_key = JIRA::IssueKeyParser.parse(entry['description'])
           payload = build_payload(entry)
           puts "Attempting to log #{human_readable_duration(parse_duration(entry))}"
           puts "starting on #{parse_start(entry)}"
