@@ -1,3 +1,7 @@
+[![CircleCI](https://circleci.com/gh/supremebeing7/time_log_robot/tree/master.svg?style=svg)](https://circleci.com/gh/supremebeing7/time_log_robot/tree/master)
+[![Code Climate](https://codeclimate.com/github/supremebeing7/time_log_robot/badges/gpa.svg)](https://codeclimate.com/github/supremebeing7/time_log_robot)
+[![Test Coverage](https://codeclimate.com/github/supremebeing7/time_log_robot/badges/coverage.svg)](https://codeclimate.com/github/supremebeing7/time_log_robot/coverage)
+
 # Time Log Robot
 ***Let the robot do your work time logging.***
 

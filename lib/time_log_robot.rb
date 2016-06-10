@@ -48,11 +48,7 @@ module TimeLogRobot
         "This is your JIRA username, which is not an email, but usually your email minus the '@domain.com'\n\n",
 
       'JIRA_PASSWORD' =>
-        "I know there's a lot of jargon, but some of these are pretty self-explanatory
-        ┌─┐
-        ┴─┴
-        ಠ_ರೃ
-      \n"
+        "I know there's a lot of jargon, but some of these are pretty self-explanatory\n"
     }
   end
 end
