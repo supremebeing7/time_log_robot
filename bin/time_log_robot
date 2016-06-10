@@ -105,7 +105,7 @@ def create_settings_file_if_nonexistent
 end
 
 def settings_file_path
-  File.join(TimeLogRobot.root, '.settings.yml')
+  File.join(ENV['HOME'], '.time_log_robot_settings.yml')
 end
 
 # set default action for gem

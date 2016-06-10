@@ -22,7 +22,7 @@ module TimeLogRobot
         end
 
         def keymap_file_path
-          File.join(TimeLogRobot.root, 'mapping.yml')
+          ENV['MAPPING_FILE_PATH'] || File.join(ENV['HOME'], '.time_log_robot_mapping.yml')
         end
       end
     end
