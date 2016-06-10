@@ -40,11 +40,11 @@ This is an integration between project management tools (like JIRA) and time log
 
 The simplest usage is just to invoke the robot:
 
-    time_log_robot
+    $ time_log_robot
 
 By default, the robot will get all time entries since the previous Saturday. To specify a different time, run it with the optional `--since` flag (Note: the date given must be in YYYY-MM-DD format):
 
-    time_log_robot --since 2016-05-01
+    $ time_log_robot --since 2016-05-01
 
 On start, the robot will ask you for these details:
 
@@ -59,7 +59,7 @@ The robot has a memory like a steel trap, so after you run it the first time, it
 
     time_log_robot --overwrite
 
-Or, if you want to pop open the internals, the robot saves all configuration in `path/to/gem/config/settings.yml`, so open up that file and edit to your heart's content.
+Or, if you want to pop open the internals, the robot saves all configuration in a file in your home directory: `~/.time_log_robot_settings.yml`, so open up that file and edit to your heart's content.
 
 ### Configuration
 
@@ -79,32 +79,43 @@ Here are some notes about how to find the appropriate values for those environme
 
 ### Mapping keys
 
-You can now map JIRA keys to specific phrases so that in your Toggl time entries, you won't need to enter the JIRA key. These mappings are stored in a YAML file in the gem root directory:
+You can now map JIRA keys to specific phrases so that in your Toggl time entries, you won't need to enter the JIRA key. These mappings are stored by default in a YAML file in your home directory:
 
-    path/to/gem/mapping.yml
+    ~/.time_log_robot_mapping.yml
 
     # Example usage
     # --
     # phrase: JIRA-KEY
     weekly planning: PM-1
 
-With this mapping, when logging time on on Toggl, instead of having to enter "weekly planning [PM-1]", you can just enter "weekly planning" and the robot will get the JIRA key from the `mapping.yml` file.
+With this mapping, when logging time on on Toggl, instead of having to enter "weekly planning [PM-1]", you can just enter "weekly planning" and the robot will get the JIRA key from the `.time_log_robot_mapping.yml` file.
+
+#### Moving the mapping file
+
+If you don't care about keeping your mapping file hidden or out of the way, or if you want it somewhere it can be accessed more easily, feel free to create your own, then just tell the robot where it's located using the `--mapping` flag:
+
+    $ time_log_robot --mapping
+    # or `time_log_robot -m`
+    Enter your MAPPING_FILE_PATH: /full/path/to/your_mapping_file.yml
 
 ### Help
 
 For more details use the help flag:
 
-    time_log_robot --help
+    $ time_log_robot --help
 
+Or ask for help with the `run` command:
+
+    $ time_log_robot run --help
 
 ## Development
 To see available rake tasks for development
 
-    rake -T
+    $ rake -T
 
 To run the app in IRB for debugging run
 
-    rake console
+    $ rake console
 
 (Note: If you've built the gem and have committed the `.gem` file, none of your `rake` commands will work. You'll need to remove the built gem and commit the deletion.)
 
@@ -112,9 +123,11 @@ To run the app in IRB for debugging run
 
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request to Dev
+3. Write tests for your new code (uses `minitest`)
+4. Make sure all tests pass (`rake test`)
+5. Commit your changes (`git commit -am 'Add some feature'`)
+6. Push to the branch (`git push origin my-new-feature`)
+7. Create new Pull Request to Dev
 
 ## License
 

@@ -1,6 +1,5 @@
 require 'minitest/autorun'
 require 'minitest/pride'
-require 'minitest/emoji'
 require 'minitest/reporters'
 require 'yaml'
 require 'active_support'
