@@ -63,7 +63,7 @@ def get_missing_envars
 
   TimeLogRobot.envars.each do |key|
     string_key = key.to_s
-    unless ENV[string_key]
+    unless ENV[string_key] || string_key == 'MAPPING_FILE_PATH'
       ENV[string_key] = ask "Enter your #{string_key}: " do |char|
         char.echo = '*' if string_key =~ /password|token/i
       end
@@ -101,7 +101,7 @@ def write_missing_envars(missing_envars={})
 end
 
 def create_settings_file_if_nonexistent
-  File.new(settings_file_path, "w+") unless File.exists?(settings_file_path)
+  File.new(settings_file_path, "w+") unless File.file?(settings_file_path)
 end
 
 def settings_file_path

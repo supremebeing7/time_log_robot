@@ -19,10 +19,18 @@ module TimeLogRobot
 
         def mappings
           YAML.load_file(keymap_file_path) || {}
+        rescue Errno::ENOENT
+          {}
         end
 
         def keymap_file_path
-          ENV['MAPPING_FILE_PATH'] || File.join(ENV['HOME'], '.time_log_robot_mapping.yml')
+          ENV['MAPPING_FILE_PATH'] || default_keymap_file_path
+        end
+
+        def default_keymap_file_path
+          path = File.join(ENV['HOME'], '.time_log_robot_mapping.yml')
+          return path if File.file?(path)
+          File.new(path, "w+").path
         end
       end
     end

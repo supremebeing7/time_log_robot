@@ -25,6 +25,9 @@ module TimeLogRobot
 
   def self.envars_help
     {
+      MAPPING_FILE_PATH:
+        "This is the path to your mapping file. By default, this file is named `.time_log_robot_mapping.yml` and lives in your home directory.\n\n",
+
       TOGGL_TOKEN:
         "In your Toggl account, go to your profile page and look for the API token at the bottom.\n\n",
 
