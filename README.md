@@ -1,4 +1,5 @@
 [![CircleCI](https://circleci.com/gh/supremebeing7/time_log_robot/tree/master.svg?style=svg)](https://circleci.com/gh/supremebeing7/time_log_robot/tree/master)
+[![Gem Version](https://badge.fury.io/rb/time_log_robot.svg)](https://badge.fury.io/rb/time_log_robot)
 [![Code Climate](https://codeclimate.com/github/supremebeing7/time_log_robot/badges/gpa.svg)](https://codeclimate.com/github/supremebeing7/time_log_robot)
 [![Test Coverage](https://codeclimate.com/github/supremebeing7/time_log_robot/badges/coverage.svg)](https://codeclimate.com/github/supremebeing7/time_log_robot/coverage)
 
