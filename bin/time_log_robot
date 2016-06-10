@@ -28,9 +28,11 @@ command :run do |c|
   c.example 'shorthand', 'time_log_robot'
   c.example 'with optional parameter "since"', 'time_log_robot run --since "2015-10-21"'
 
-  c.option '--since STRING', String, 'The date from which to log time entries. Must be in YYYY-MM-DD format. Default is the previous Saturday.'
+  c.option '-m', '--mapping', 'Description to JIRA key mapping file is located by default at `~/.time_log_robot_mapping.yml`. Use this flag if you have a mapping file eslewhere and would like to define the path to point to your file instead.'
 
   c.option '--overwrite', 'Your settings are automatically written to a file - `~/.time_log_robot_settings.yml` - to be used again the next time you invoke the robot. Use this flag if you need to overwrite those settings.'
+
+  c.option '-s', '--since STRING', String, 'The date from which to log time entries. Must be in YYYY-MM-DD format. Default is the previous Saturday.'
 
   c.action do |args, options|
     if options.inputs_help
@@ -41,6 +43,9 @@ command :run do |c|
       fetch_envars_from_config unless options.overwrite
 
       missing_envars = get_missing_envars
+      if options.mapping
+        missing_envars['MAPPING_FILE_PATH'] = get_envar('MAPPING_FILE_PATH')
+      end
 
       since = DateTime.parse(options.since).to_s unless options.since.nil?
 
@@ -62,20 +67,22 @@ def get_missing_envars
   missing_envars = {}
 
   TimeLogRobot.envars.each do |key|
-    string_key = key.to_s
-    unless ENV[string_key] || string_key == 'MAPPING_FILE_PATH'
-      ENV[string_key] = ask "Enter your #{string_key}: " do |char|
-        char.echo = '*' if string_key =~ /password|token/i
-      end
-      if ENV[string_key].length == 0
-        puts 'Invalid input. This is a required field.'
-        exit
-      end
-      missing_envars[string_key] = ENV[string_key]
-    end
+    next if key == 'MAPPING_FILE_PATH' || ENV[key]
+    missing_envars[key] = get_envar(key)
   end
 
   return missing_envars
+end
+
+def get_envar(key)
+  ENV[key] = ask "Enter your #{key}: " do |char|
+    char.echo = '*' if key =~ /password|token/i
+  end
+  if ENV[key].length == 0
+    puts 'Invalid input. This is a required field.'
+    exit
+  end
+  ENV[key]
 end
 
 def fetch_envars_from_config
