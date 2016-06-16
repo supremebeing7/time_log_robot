@@ -3,15 +3,19 @@ module TimeLogRobot
     class WorkLogger
       include HTTParty
 
-      attr_accessor :username, :password, :time_entries, :log_tags
-
       base_uri 'https://hranswerlink.atlassian.net/rest/api/2'
 
+      @errors = []
+      @logged_count = 0
+
       class << self
+        attr_accessor :errors, :logged_count
+
         def log_all(time_entries:)
           time_entries.each do |entry|
             log(entry) unless is_logged?(entry)
           end
+          print_report
         end
 
         private
@@ -33,30 +37,50 @@ module TimeLogRobot
         end
 
         def log(entry)
-          issue_key = JIRA::IssueKeyParser.parse(entry['description'])
+          issue_key = parse_issue_key(entry)
           payload = build_payload(entry)
-          puts "Attempting to log #{human_readable_duration(parse_duration(entry))}"
-          puts "starting on #{parse_start(entry)}"
-          puts "to #{entry['description']}"
-          puts "issue key #{issue_key}"
-          puts "with comment #{parse_comment(entry)}" unless parse_comment(entry).nil?
           response = post("/issue/#{issue_key}/worklog", basic_auth: auth, headers: headers, body: payload)
           if response.success?
-            puts "Success"
-            puts '*' * 20
+            print "\e[32m.\e[0m"
             set_entry_as_logged(entry)
+            @logged_count += 1
           else
-            puts response.code
-            puts "Failed! Response from JIRA:"
+            print "\e[31mF\e[0m"
+            @errors << [entry, response]
             if response.code == 401
               raise UnauthorizedError, "Please check your username and password and try again"
-            elsif response.code == 404
-              puts "Not Found - Did you forget to put the JIRA issue key in your Toggl entry?"
             end
-            puts '*' * 20
           end
         end
         class UnauthorizedError < Exception; end
+
+        def parse_issue_key(entry)
+          JIRA::IssueKeyParser.parse(entry['description'])
+        end
+
+        def print_report
+          print_errors if errors.any?
+          puts "\n\t#{logged_count} entries logged, #{errors.size} failed.\n\n"
+        end
+
+        def print_errors
+          puts "\n\t\e[1;31m Failed to log the following entries:\e[0m"
+          errors.each_with_index do |(entry, response), index|
+            puts "\e[31m"
+            puts "\t#{index + 1})\tDescription: #{entry['description']}"
+            if issue_key = parse_issue_key(entry)
+              puts "\t\tIssue Key: #{issue_key}"
+            else
+              puts "\t\tIssue Key: Missing"
+            end
+            unless parse_comment(entry).nil?
+              puts "\t\tComment: #{parse_comment(entry)}"
+            end
+            puts "\t\t#{human_readable_duration(parse_duration(entry))} starting on #{parse_start(entry)}"
+            puts "\t\tResponse Code: #{response.code}"
+            puts "\e[0m"
+          end
+        end
 
         def set_entry_as_logged(entry)
           Toggl::Tagger.update(entry_id: entry['id'])
@@ -95,12 +119,6 @@ module TimeLogRobot
           hours = total_minutes/60
           remaining_minutes = total_minutes - hours * 60
           "#{hours}h #{remaining_minutes}m"
-        end
-
-        # @TODO figure out how to capture both of this in one .match call with one set of regex
-        def parse_issue_key(entry)
-          matches = entry['description'].match(/(\[(?<issue_key>[^\]]*)\])/)
-          matches['issue_key'] if matches.present?
         end
 
         def parse_comment(entry)
