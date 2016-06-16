@@ -126,6 +126,8 @@ To run the app in IRB for debugging run
 
 ## Contributing
 
+Contributions are welcome! See the [Issues](https://github.com/supremebeing7/time_log_robot/issues) for stuff that needs doing, or create a new one if you have an idea and we can discuss. Eventually it would be great to integrate this with other project management and time tracking tools, so if you use something besides JIRA or Toggl and want to build an integration, that would be welcome. (There's some refactoring that needs to be done on the existing code to make this simpler - issues [#15](https://github.com/supremebeing7/time_log_robot/issues/15) and [#16](https://github.com/supremebeing7/time_log_robot/issues/16).)
+
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Write tests for your new code (uses `minitest`)
