@@ -55,27 +55,7 @@ module TimeLogRobot
         class UnauthorizedError < Exception; end
 
         def print_report
-          print_errors if errors.any?
-          puts "\n\t#{logged_count} entries logged, #{errors.size} failed.\n\n"
-        end
-
-        def print_errors
-          puts "\n\t\e[1;31m Failed to log the following entries:\e[0m"
-          errors.each_with_index do |(entry, response), index|
-            puts "\e[31m"
-            puts "\t#{index + 1})\tDescription: #{entry.description}"
-            if entry.issue_key
-              puts "\t\tIssue Key: #{entry.issue_key}"
-            else
-              puts "\t\tIssue Key: Missing"
-            end
-            if entry.comment
-              puts "\t\tComment: #{entry.comment}"
-            end
-            puts "\t\t#{entry.human_readable_duration} starting on #{entry.start}"
-            puts "\t\tResponse Code: #{response.code}"
-            puts "\e[0m"
-          end
+          Reporter.report(errors, logged_count)
         end
 
         def set_entry_as_logged(entry)

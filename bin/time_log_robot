@@ -3,6 +3,7 @@
 require 'commander/import'
 require 'time_log_robot'
 require 'time_log_robot/version'
+require 'time_log_robot/reporter'
 require 'time_log_robot/toggl/tagger'
 require 'time_log_robot/toggl/report'
 require 'time_log_robot/toggl/issue_key_parser'
