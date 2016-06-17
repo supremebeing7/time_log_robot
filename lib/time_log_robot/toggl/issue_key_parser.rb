@@ -1,5 +1,5 @@
 module TimeLogRobot
-  module JIRA
+  module Toggl
     class IssueKeyParser
 
       class << self

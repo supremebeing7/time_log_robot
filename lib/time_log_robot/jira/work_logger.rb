@@ -12,7 +12,8 @@ module TimeLogRobot
         attr_accessor :errors, :logged_count
 
         def log_all(time_entries:)
-          time_entries.each do |entry|
+          time_entries.each do |raw_entry|
+            entry = Toggl::Entry.new(raw_entry)
             log(entry) unless is_logged?(entry)
           end
           print_report
@@ -33,13 +34,12 @@ module TimeLogRobot
         end
 
         def is_logged?(entry)
-          (log_tags - entry['tags']).size < log_tags.size
+          (log_tags - entry.tags).size < log_tags.size
         end
 
         def log(entry)
-          issue_key = parse_issue_key(entry)
           payload = build_payload(entry)
-          response = post("/issue/#{issue_key}/worklog", basic_auth: auth, headers: headers, body: payload)
+          response = post("/issue/#{entry.issue_key}/worklog", basic_auth: auth, headers: headers, body: payload)
           if response.success?
             print "\e[32m.\e[0m"
             set_entry_as_logged(entry)
@@ -54,10 +54,6 @@ module TimeLogRobot
         end
         class UnauthorizedError < Exception; end
 
-        def parse_issue_key(entry)
-          JIRA::IssueKeyParser.parse(entry['description'])
-        end
-
         def print_report
           print_errors if errors.any?
           puts "\n\t#{logged_count} entries logged, #{errors.size} failed.\n\n"
@@ -67,23 +63,23 @@ module TimeLogRobot
           puts "\n\t\e[1;31m Failed to log the following entries:\e[0m"
           errors.each_with_index do |(entry, response), index|
             puts "\e[31m"
-            puts "\t#{index + 1})\tDescription: #{entry['description']}"
-            if issue_key = parse_issue_key(entry)
-              puts "\t\tIssue Key: #{issue_key}"
+            puts "\t#{index + 1})\tDescription: #{entry.description}"
+            if entry.issue_key
+              puts "\t\tIssue Key: #{entry.issue_key}"
             else
               puts "\t\tIssue Key: Missing"
             end
-            unless parse_comment(entry).nil?
-              puts "\t\tComment: #{parse_comment(entry)}"
+            if entry.comment
+              puts "\t\tComment: #{entry.comment}"
             end
-            puts "\t\t#{human_readable_duration(parse_duration(entry))} starting on #{parse_start(entry)}"
+            puts "\t\t#{entry.human_readable_duration} starting on #{entry.start}"
             puts "\t\tResponse Code: #{response.code}"
             puts "\e[0m"
           end
         end
 
         def set_entry_as_logged(entry)
-          Toggl::Tagger.update(entry_id: entry['id'])
+          Toggl::Tagger.update(entry_id: entry.id)
         end
 
         def auth
@@ -99,31 +95,11 @@ module TimeLogRobot
         end
 
         def build_payload(entry)
-          JIRA::PayloadBuilder.build(
-            start: parse_start(entry),
-            duration_in_seconds: parse_duration(entry),
-            comment: parse_comment(entry)
+          PayloadBuilder.build(
+            start: entry.start,
+            duration_in_seconds: entry.duration_in_seconds,
+            comment: entry.comment
           )
-        end
-
-        def parse_start(entry)
-          DateTime.strptime(entry['start'], "%FT%T%:z").strftime("%FT%T.%L%z")
-        end
-
-        def parse_duration(entry)
-          entry['dur']/1000 # Toggl sends times in milliseconds
-        end
-
-        def human_readable_duration(seconds)
-          total_minutes = seconds/60
-          hours = total_minutes/60
-          remaining_minutes = total_minutes - hours * 60
-          "#{hours}h #{remaining_minutes}m"
-        end
-
-        def parse_comment(entry)
-          matches = entry['description'].match(/(\{(?<comment>[^\}]*)\})/)
-          matches['comment'] if matches.present?
         end
       end
     end
