@@ -1,7 +1,7 @@
 require_relative '../../test_helper'
 
 module TimeLogRobot
-  module JIRA
+  module Toggl
     class IssueKeyParser
       def self.mappings
         {
@@ -12,7 +12,7 @@ module TimeLogRobot
 
     class TestIssueKeyParser < Minitest::Test
       def setup
-        @described_class = TimeLogRobot::JIRA::IssueKeyParser
+        @described_class = TimeLogRobot::Toggl::IssueKeyParser
       end
 
       def test_that_it_gets_the_issue_key

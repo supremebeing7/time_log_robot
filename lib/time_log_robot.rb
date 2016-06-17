@@ -7,11 +7,14 @@ module TimeLogRobot
   end
 
   def self.start(since)
-    time_entries = fetch_time_entries(since)
-    JIRA::WorkLogger.log_all(time_entries: time_entries)
+    report = fetch_time_report(since)
+    JIRA::WorkLogger.log_all(
+      service: report[:service],
+      time_entries: report[:entries]
+    )
   end
 
-  def self.fetch_time_entries(since)
+  def self.fetch_time_report(since)
     if since.nil?
       Toggl::Report.fetch
     else
