@@ -27,7 +27,7 @@ module TimeLogRobot
           2.upto(pages) do |page|
             entries += get_entries_from_next_page(since, page)
           end
-          entries
+          { service: 'Toggl', entries: entries }
         end
 
         def get_entries_from_next_page(since, page)

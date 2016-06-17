@@ -20,6 +20,7 @@ GEM
     builder (3.2.2)
     codeclimate-test-reporter (0.5.2)
       simplecov (>= 0.7.1, < 1.0.0)
+    coderay (1.1.1)
     commander (4.4.0)
       highline (~> 1.7.2)
     docile (1.1.5)
@@ -29,6 +30,7 @@ GEM
       multi_xml (>= 0.5.2)
     i18n (0.7.0)
     json (1.8.3)
+    method_source (0.8.2)
     minitest (5.8.4)
     minitest-reporters (1.1.9)
       ansi
@@ -36,6 +38,10 @@ GEM
       minitest (>= 5.0)
       ruby-progressbar
     multi_xml (0.5.5)
+    pry (0.10.3)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+      slop (~> 3.4)
     rake (10.5.0)
     ruby-progressbar (1.8.1)
     simplecov (0.11.2)
@@ -43,6 +49,7 @@ GEM
       json (~> 1.8)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.0)
+    slop (3.6.0)
     thread_safe (0.3.5)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
@@ -55,6 +62,7 @@ DEPENDENCIES
   codeclimate-test-reporter (~> 0.5)
   minitest (~> 5.8)
   minitest-reporters (~> 1.1)
+  pry
   rake (~> 10.5)
   time_log_robot!
 

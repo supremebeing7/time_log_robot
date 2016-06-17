@@ -11,12 +11,12 @@ module TimeLogRobot
       class << self
         attr_accessor :errors, :logged_count
 
-        def log_all(time_entries:)
+        def log_all(service:, time_entries:)
           time_entries.each do |raw_entry|
-            entry = Toggl::Entry.new(raw_entry)
+            entry = Entry.new(service: service, raw_entry: raw_entry)
             log(entry) unless is_logged?(entry)
           end
-          print_report
+          report!
         end
 
         private
@@ -42,7 +42,7 @@ module TimeLogRobot
           response = post("/issue/#{entry.issue_key}/worklog", basic_auth: auth, headers: headers, body: payload)
           if response.success?
             print "\e[32m.\e[0m"
-            set_entry_as_logged(entry)
+            tag!(entry) if should_tag?(entry)
             @logged_count += 1
           else
             print "\e[31mF\e[0m"
@@ -54,12 +54,16 @@ module TimeLogRobot
         end
         class UnauthorizedError < Exception; end
 
-        def print_report
+        def report!
           Reporter.report(errors, logged_count)
         end
 
-        def set_entry_as_logged(entry)
-          Toggl::Tagger.update(entry_id: entry.id)
+        def tag!(entry)
+          Tagger.tag(entry)
+        end
+
+        def should_tag?(entry)
+          entry.should_tag?
         end
 
         def auth

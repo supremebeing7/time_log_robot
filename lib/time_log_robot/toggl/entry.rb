@@ -44,6 +44,10 @@ module TimeLogRobot
       def tags
         raw_entry['tags']
       end
+
+      def should_tag?
+        true
+      end
     end
   end
 end
