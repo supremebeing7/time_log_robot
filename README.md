@@ -47,6 +47,12 @@ The simplest usage is just to invoke the robot:
 
     $ time_log_robot
 
+#### Format of time entries
+
+Time entries need an issue key (in JIRA, something like `BUG-12`), a start time, and a duration. The robot will try to parse an issue key from the description first, then from the project name, then from the mapping file (see ["Mapping Keys"](#mapping-keys) section).
+
+#### Specifying how far back to log
+
 By default, the robot will get all time entries since the previous Saturday. To specify a different time, run it with the optional `--since` flag (Note: the date given must be in YYYY-MM-DD format):
 
     $ time_log_robot --since 2016-05-01
