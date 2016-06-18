@@ -7,9 +7,10 @@ module TimeLogRobot
 
       @errors = []
       @logged_count = 0
+      @issue_key = nil
 
       class << self
-        attr_accessor :errors, :logged_count
+        attr_accessor :errors, :logged_count, :issue_key
 
         def log_all(service:, time_entries:)
           time_entries.each do |raw_entry|
@@ -39,7 +40,8 @@ module TimeLogRobot
 
         def log(entry)
           payload = build_payload(entry)
-          response = post("/issue/#{entry.issue_key}/worklog", basic_auth: auth, headers: headers, body: payload)
+          @issue_key = parse_issue_key(entry)
+          response = post("/issue/#{issue_key}/worklog", basic_auth: auth, headers: headers, body: payload)
           if response.success?
             print "\e[32m.\e[0m"
             tag!(entry) if should_tag?(entry)
@@ -84,6 +86,10 @@ module TimeLogRobot
             duration_in_seconds: entry.duration_in_seconds,
             comment: entry.comment
           )
+        end
+
+        def parse_issue_key(entry)
+          IssueKeyParser.parse(entry)
         end
       end
     end

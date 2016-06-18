@@ -1,7 +1,7 @@
 module TimeLogRobot
   module Toggl
     class Entry
-      attr_accessor :raw_entry, :issue_key, :duration
+      attr_accessor :raw_entry, :duration
 
       def initialize(raw_entry)
         @raw_entry = raw_entry
@@ -14,10 +14,6 @@ module TimeLogRobot
       def comment
         matches = raw_entry['description'].match(/(\{(?<comment>[^\}]*)\})/)
         matches['comment'] if matches.present?
-      end
-
-      def issue_key
-        @issue_key ||= IssueKeyParser.parse(description)
       end
 
       def start
@@ -43,6 +39,10 @@ module TimeLogRobot
 
       def tags
         raw_entry['tags']
+      end
+
+      def project_name
+        raw_entry['project'] || ''
       end
 
       def should_tag?
