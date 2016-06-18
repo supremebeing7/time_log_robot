@@ -12,8 +12,13 @@ engines:
       - php
   fixme:
     enabled: true
+    exclude_fingerprints:
+    - 9b1a9060d3684be85a832e44ca1ea7dd
   rubocop:
     enabled: true
+    checks:
+      Rubocop/Lint/AssignmentInCondition:
+        enabled: false
 ratings:
   paths:
   - Gemfile.lock
