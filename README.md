@@ -51,6 +51,29 @@ The simplest usage is just to invoke the robot:
 
 Time entries need an issue key (in JIRA, something like `BUG-12`), a start time, and a duration. The robot will try to parse an issue key from the description first, then from the project name, then from the mapping file (see ["Mapping Keys"](#mapping-keys) section).
 
+For example, all of these are valid:
+
+    This is a bug BUG-15
+
+    (no description) APP-20
+
+    Meeting
+    (In project named: ADMIN-123)
+
+##### Comments
+
+Some project management tools also accept comments/descriptions for each time log entry. The robot uses any text within curly braces in the time logging app (Toggl) entry as the description in the project management log entry.
+
+For example:
+
+    This is a bug {This is my comment} BUG-15
+
+If there are no curly braces present, the robot will use the entire description as the comment.
+
+For example:
+
+    This whole description is my comment on issue BUG-20
+
 #### Specifying how far back to log
 
 By default, the robot will get all time entries since the previous Saturday. To specify a different time, run it with the optional `--since` flag (Note: the date given must be in YYYY-MM-DD format):
