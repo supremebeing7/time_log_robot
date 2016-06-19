@@ -21,6 +21,11 @@ module TimeLogRobot
         assert_equal "PM-12", @described_class.parse(@entry)
       end
 
+      def test_that_it_gets_the_issue_key_without_brackets
+        @entry.description = 'description PM-12'
+        assert_equal "PM-12", @described_class.parse(@entry)
+      end
+
       def test_that_it_gives_nothing_with_no_key_present
         @entry.description = 'description'
         assert_equal nil, @described_class.parse(@entry)
@@ -39,6 +44,16 @@ module TimeLogRobot
       def test_that_parse_mappings_works_with_comments
         @entry.description = 'mapped description - {with comment}'
         assert_equal "HI-5", @described_class.parse(@entry)
+      end
+
+      def test_get_issue_key_from_project_name
+        @entry.project_name = 'BUG-30'
+        assert_equal "BUG-30", @described_class.parse(@entry)
+      end
+
+      def test_get_issue_key_from_project_name_with_extra_text
+        @entry.project_name = 'BUG-30 crazy bug'
+        assert_equal "BUG-30", @described_class.parse(@entry)
       end
     end
   end
