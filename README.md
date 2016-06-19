@@ -68,6 +68,12 @@ For example:
 
     This is a bug {This is my comment} BUG-15
 
+If there are no curly braces present, the robot will use the entire description as the comment.
+
+For example:
+
+    This whole description is my comment on issue BUG-20
+
 #### Specifying how far back to log
 
 By default, the robot will get all time entries since the previous Saturday. To specify a different time, run it with the optional `--since` flag (Note: the date given must be in YYYY-MM-DD format):
