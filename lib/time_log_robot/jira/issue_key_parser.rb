@@ -1,15 +1,24 @@
 module TimeLogRobot
-  module Toggl
+  module JIRA
     class IssueKeyParser
+      ISSUE_KEY_REGEX = /([A-Z]+-\d+)/
 
       class << self
-        def parse(description)
-          matches = description.match(/(\[(?<issue_key>[^\]]*)\])/)
-          return matches['issue_key'] unless matches.nil?
-          get_key_from_key_mapping(description)
+        def parse(entry)
+          get_key_from_description(entry.description) ||
+          get_key_from_project(entry.project_name) ||
+          get_key_from_key_mapping(entry.description)
         end
 
         private
+
+        def get_key_from_description(description)
+          description.match(ISSUE_KEY_REGEX).to_a[1]
+        end
+
+        def get_key_from_project(project_name)
+          project_name.match(ISSUE_KEY_REGEX).to_a[1]
+        end
 
         def get_key_from_key_mapping(description)
           if found_key = mappings.keys.find { |key| description.include?(key) }
