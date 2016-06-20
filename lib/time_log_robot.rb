@@ -48,7 +48,7 @@ module TimeLogRobot
         "This is the tag name you would like to use for tagging your Toggl time entries as they are logged to JIRA.\n\n",
 
       'JIRA_USERNAME' =>
-        "This is your JIRA username, which is not an email, but usually your email minus the '@domain.com'\n\n",
+        "This is your JIRA username, which can be found in your JIRA user profile.\n\n",
 
       'JIRA_PASSWORD' =>
         "I know there's a lot of jargon, but some of these are pretty self-explanatory\n"
