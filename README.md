@@ -108,7 +108,7 @@ Here are some notes about how to find the appropriate values for those environme
 
 * **TOGGL_USER_AGENT**: This is your Toggl username, usually your email.
 * **TOGGL_DEFAULT_LOG_TAG**: This is the tag name you would like to use for tagging your Toggl time entries as they are logged to JIRA.
-* **JIRA_USERNAME**: This is your JIRA username, which is not an email, but usually your email minus the "@domain.com"
+* **JIRA_USERNAME**: This is your JIRA username, which can be found in your JIRA user profile.
 * **JIRA_PASSWORD**: I know there's a lot of jargon, but some of these are pretty self-explanatory. :trollface:
 
 ### Mapping keys
