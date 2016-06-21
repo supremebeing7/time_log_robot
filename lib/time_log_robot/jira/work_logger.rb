@@ -83,7 +83,8 @@ module TimeLogRobot
         def build_payload(entry)
           PayloadBuilder.build(
             start: entry.start,
-            duration_in_seconds: entry.duration_in_seconds,
+            # Add an extra 30 seconds for rounding to nearest minute instead of always rounding down
+            duration_in_seconds: entry.duration_in_seconds + 30,
             comment: entry.comment
           )
         end
