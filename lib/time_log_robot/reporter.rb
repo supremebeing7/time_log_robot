@@ -3,19 +3,19 @@ module TimeLogRobot
     class << self
       attr_accessor :errors
 
-      def report(errors, logged_count)
+      def report(errors, successes)
         @errors = errors
         print_errors if errors.any?
-        puts "\n\t#{logged_count} entries logged, #{errors.size} failed.\n\n"
+        puts "\n\t#{successes.size} entries logged, #{errors.size} failed.\n\n"
       end
 
       def print_errors
         puts "\n\t\e[1;31m Failed to log the following entries:\e[0m"
-        errors.each_with_index do |(entry, response), index|
+        errors.each_with_index do |(entry, issue_key, response), index|
           puts "\e[31m"
           puts "\t#{index + 1})\tDescription: #{entry.description}"
-          if entry.issue_key
-            puts "\t\tIssue Key: #{entry.issue_key}"
+          if issue_key
+            puts "\t\tIssue Key: #{issue_key}"
           else
             puts "\t\tIssue Key: Missing"
           end

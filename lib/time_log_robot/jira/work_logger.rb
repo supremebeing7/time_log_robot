@@ -5,12 +5,12 @@ module TimeLogRobot
 
       base_uri 'https://hranswerlink.atlassian.net/rest/api/2'
 
+      @successes = []
       @errors = []
-      @logged_count = 0
       @issue_key = nil
 
       class << self
-        attr_accessor :errors, :logged_count, :issue_key
+        attr_accessor :errors, :successes, :issue_key
 
         def log_all(service:, time_entries:)
           time_entries.each do |raw_entry|
@@ -45,10 +45,10 @@ module TimeLogRobot
           if response.success?
             print "\e[32m.\e[0m"
             tag!(entry) if should_tag?(entry)
-            @logged_count += 1
+            @successes << [entry, issue_key, response]
           else
             print "\e[31mF\e[0m"
-            @errors << [entry, response]
+            @errors << [entry, issue_key, response]
             if response.code == 401
               raise UnauthorizedError, "Please check your username and password and try again"
             end
@@ -57,7 +57,7 @@ module TimeLogRobot
         class UnauthorizedError < Exception; end
 
         def report!
-          Reporter.report(errors, logged_count)
+          Reporter.report(errors, successes)
         end
 
         def tag!(entry)

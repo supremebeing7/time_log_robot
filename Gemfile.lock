@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    time_log_robot (0.2.0)
+    time_log_robot (0.2.1)
       activesupport (~> 4.2, >= 4.2.6)
       commander (~> 4.1, >= 4.1.6)
       httparty (~> 0.13, >= 0.13.0)
