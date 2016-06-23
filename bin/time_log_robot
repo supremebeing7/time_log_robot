@@ -79,9 +79,11 @@ def get_missing_envars
 end
 
 def get_envar(key)
-  ENV[key] = ask "Enter your #{key}: " do |char|
+  env_value = ask "Enter your #{key}: " do |char|
     char.echo = '*' if key =~ /password|token/i
   end
+  env_value.strip! unless should_not_strip?(key)
+  ENV[key] = env_value
   if ENV[key].length == 0
     puts 'Invalid input. This is a required field.'
     exit
@@ -89,9 +91,14 @@ def get_envar(key)
   ENV[key]
 end
 
+def should_not_strip?(key)
+  %w(JIRA_PASSWORD).include? key
+end
+
 def fetch_envars_from_config
   return unless envars = YAML.load_file(settings_file_path)
   envars.each_pair do |key, value|
+    value.strip! unless should_not_strip?(key)
     ENV[key.upcase] = value
   end
 end
