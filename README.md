@@ -132,6 +132,33 @@ If you don't care about keeping your mapping file hidden or out of the way, or i
     # or `time_log_robot -m`
     Enter your MAPPING_FILE_PATH: /full/path/to/your_mapping_file.yml
 
+### Automate Your Robot
+
+Mac and Linux can use `crontab` to set your robot to run on a schedule. You will need to get it running successfully first so all of your credentials are saved.
+
+Next, make a copy of your current `crontab`:
+
+    crontab -l > my-crontab
+
+Then open the `my-crontab` in your favorite editor (e.g. `atom my-crontab`) and add a timing sequence in which to run the robot command. For example, to have the robot run every Saturday at 8AM:
+
+    * 8 * * 6  time_log_robot
+
+(For help in figuring out your timing sequence:)
+
+    *     *     *   *    *        command to be executed
+    -     -     -   -    -
+    |     |     |   |    |
+    |     |     |   |    +----- day of week (0 - 6) (Sunday=0)
+    |     |     |   +------- month (1 - 12)
+    |     |     +--------- day of        month (1 - 31)
+    |     +----------- hour (0 - 23)
+    +------------- min (0 - 59)
+    
+After editing, save and then “install” your crontab file by giving it to crontab:
+
+    crontab my-crontab
+
 ### Help
 
 For more details use the help flag:
