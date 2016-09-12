@@ -26,8 +26,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'minitest-reporters', '~> 1.1'
   spec.add_development_dependency 'codeclimate-test-reporter', '~> 0.5'
 
-  spec.add_runtime_dependency 'activesupport', '>= 4.2.6'
-  spec.add_runtime_dependency 'commander', '>= 4.1.6'
-  spec.add_runtime_dependency 'httparty', '>= 0.13.0'
+  spec.add_runtime_dependency 'activesupport', '~> 4.2', '>= 4.2.6'
+  spec.add_runtime_dependency 'commander', '~> 4.1', '>= 4.1.6'
+  spec.add_runtime_dependency 'httparty', '~> 0.13', '>= 0.13.0'
   spec.add_runtime_dependency 'json', '1.8.1'
 end
