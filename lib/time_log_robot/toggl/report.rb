@@ -1,5 +1,3 @@
-require 'active_support/core_ext/date/calculations'
-
 module TimeLogRobot
   module Toggl
     class Report
@@ -10,7 +8,7 @@ module TimeLogRobot
       # TODO Refactor to avoid having to pass around `since` so much
       class << self
         def fetch(since: nil)
-          since ||= Date.today.beginning_of_week(:saturday).to_time
+          since = since_or_default(since)
           response = get('/details', basic_auth: auth, query: query(since))
           if response.success?
             pages = number_of_pages(response['total_count'])
@@ -21,7 +19,27 @@ module TimeLogRobot
         end
         class FetchError < Exception; end
 
+        def since_or_default(since)
+          since || default_since
+        end
+
         private
+
+        def default_since
+          # DAYNAMES structure:
+          #  ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+          # Therefore saturday index is 6, calculate it anyways incase it changes
+          saturday_index = Date::DAYNAMES.index("Saturday")
+          today_index = Date.today.wday
+
+          # Return today if it is Saturday (this is what the previous
+          # implementation would do)
+          return Date.today.to_time if today_index == saturday_index
+
+          # Otherwise, subtract the index + 1 (to account
+          # for indecies starting at 0)
+          (Date.today - (today_index + 1)).to_time
+        end
 
         def aggregate_entries(entries, pages, since)
           2.upto(pages) do |page|

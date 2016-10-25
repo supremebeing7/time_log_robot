@@ -7,7 +7,6 @@ task :console do
   require 'irb/completion'
   require 'pp'
   require 'yaml'
-  require 'active_support'
   require 'httparty'
   Dir[File.expand_path "lib/**/*.rb"].each{|file| require_relative file }
   ARGV.clear
