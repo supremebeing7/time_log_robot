@@ -1,10 +1,8 @@
 PATH
   remote: .
   specs:
-    time_log_robot (0.2.2)
-      commander (~> 4.1, >= 4.1.6)
+    time_log_robot (0.4.0)
       httparty (~> 0.13, >= 0.13.0)
-      json (= 1.8.1)
 
 GEM
   remote: https://rubygems.org/
@@ -14,10 +12,7 @@ GEM
     codeclimate-test-reporter (0.6.0)
       simplecov (>= 0.7.1, < 1.0.0)
     coderay (1.1.1)
-    commander (4.4.0)
-      highline (~> 1.7.2)
     docile (1.1.5)
-    highline (1.7.8)
     httparty (0.14.0)
       multi_xml (>= 0.5.2)
     json (1.8.1)
@@ -53,3 +48,6 @@ DEPENDENCIES
   pry
   rake (~> 10.5)
   time_log_robot!
+
+BUNDLED WITH
+   1.12.5
