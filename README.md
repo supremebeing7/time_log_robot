@@ -134,6 +134,8 @@ If you don't care about keeping your mapping file hidden or out of the way, or i
 
 ### Automate Your Robot
 
+**_Note: `crontab` only works if the computer is not shut down or asleep._**
+
 Mac and Linux can use `crontab` to set your robot to run on a schedule. You will need to get it running successfully first so all of your credentials are saved.
 
 Next, make a copy of your current `crontab`:
@@ -178,7 +180,11 @@ To run the app in IRB for debugging run
 
     $ rake console
 
-(Note: If you've built the gem and have committed the `.gem` file, none of your `rake` commands will work. You'll need to remove the built gem and commit the deletion.)
+To install your local version
+
+    $ rake install
+
+(Note: If you've built the gem using `gem build` and have committed the `.gem` file, none of your `rake` commands will work. You'll need to remove the built gem and commit the deletion.)
 
 ## Contributing
 
