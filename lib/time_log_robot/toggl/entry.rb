@@ -13,7 +13,7 @@ module TimeLogRobot
 
       def comment
         matches = raw_entry['description'].match(/(\{(?<comment>[^\}]*)\})/)
-        return matches['comment'] if matches.present?
+        return matches['comment'] unless matches.nil? || !matches.strip.empty?
         description
       end
 
