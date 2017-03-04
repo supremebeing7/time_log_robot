@@ -210,4 +210,4 @@ This program is provided under an MIT open source license, read the [MIT-LICENSE
 
 ## Copyright
 
-Copyright (c) 2017 Mark J. Lehman
+Copyright (c) 2016-2017 Mark J. Lehman
