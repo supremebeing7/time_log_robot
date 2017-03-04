@@ -47,7 +47,43 @@ The simplest usage is just to invoke the robot:
 
     $ time_log_robot
 
-#### Format of time entries
+### Configuration
+
+On start, the robot will ask you for these values:
+
+    TOGGL_TOKEN
+    TOGGL_WORKSPACE_ID
+    TOGGL_USER_AGENT
+    TOGGL_DEFAULT_LOG_TAG
+    JIRA_USERNAME
+    JIRA_PASSWORD
+
+Here are some notes about how to find the appropriate values for those environment variables:
+
+* **TOGGL_TOKEN**: In your Toggl account, go to your profile page and look for the API token at the bottom.
+* **TOGGL_WORKSPACE_ID**: This is a little trickier  You can do a curl request to find it (replacing **TOGGL_TOKEN** with your token value from above):
+
+    `curl -v -u <TOGGL_TOKEN>:api_token https://www.toggl.com/api/v8/workspaces`
+
+    Look at the result at the bottom of the response/`stdout` and find the `id` key and its value:
+
+    ```[{"id":TOGGL_WORKSPACE_ID,"name":"Wreck some code","profile":0,"premium":false,"admin":true,"default_hourly_rate":0,"default_currency":"USD","only_admins_may_create_projects":false,"only_admins_see_billable_rates":false,"only_admins_see_team_dashboard":false,"projects_billable_by_default":true,"rounding":1,"rounding_minutes":0,"api_token":"TOGGL_TOKEN","at":"2016-02-24T01:30:51+00:00","ical_enabled":true}]```
+
+
+* **TOGGL_USER_AGENT**: This is your Toggl username, usually your email.
+* **TOGGL_DEFAULT_LOG_TAG**: This is the tag name you would like to use for tagging your Toggl time entries as they are logged to JIRA.
+* **JIRA_USERNAME**: This is your JIRA username, which can be found in your JIRA user profile.
+* **JIRA_PASSWORD**: I know there's a lot of jargon, but some of these are pretty self-explanatory. :trollface:
+
+### Updating config values
+
+The robot has a memory like a steel trap, so after you run it the first time, it will remember your configuration settings and you'll never need to enter them again. However, if you enter the wrong info, or need to change it at some point, you can always overwrite the configuration:
+
+    time_log_robot --overwrite
+
+Or, if you want to pop open the internals, the robot saves all configuration in a file in your home directory: `~/.time_log_robot_settings.yml`, so open up that file and edit to your heart's content.
+
+### Format of time entries
 
 Time entries need an issue key (in JIRA, something like `BUG-12`), a start time, and a duration. The robot will try to parse an issue key from the description first, then from the project name, then from the mapping file (see ["Mapping Keys"](#mapping-keys) section).
 
@@ -60,7 +96,7 @@ For example, all of these are valid:
     Meeting
     (In project named: ADMIN-123)
 
-##### Comments
+### Comments
 
 Some project management tools also accept comments/descriptions for each time log entry. The robot uses any text within curly braces in the time logging app (Toggl) entry as the description in the project management log entry.
 
@@ -74,42 +110,11 @@ For example:
 
     This whole description is my comment on issue BUG-20
 
-#### Specifying how far back to log
+### Specifying how far back to log
 
 By default, the robot will get all time entries since the previous Saturday. To specify a different time, run it with the optional `--since` flag (Note: the date given must be in YYYY-MM-DD format):
 
     $ time_log_robot --since 2016-05-01
-
-On start, the robot will ask you for these details:
-
-    TOGGL_TOKEN
-    TOGGL_WORKSPACE_ID
-    TOGGL_USER_AGENT
-    TOGGL_DEFAULT_LOG_TAG
-    JIRA_USERNAME
-    JIRA_PASSWORD
-
-The robot has a memory like a steel trap, so after you run it the first time, it will remember your configuration settings and you'll never need to enter them again. However, if you enter the wrong info, or need to change it at some point, you can always overwrite the configuration:
-
-    time_log_robot --overwrite
-
-Or, if you want to pop open the internals, the robot saves all configuration in a file in your home directory: `~/.time_log_robot_settings.yml`, so open up that file and edit to your heart's content.
-
-### Configuration
-
-Here are some notes about how to find the appropriate values for those environment variables:
-
-* **TOGGL_TOKEN**: In your Toggl account, go to your profile page and look for the API token at the bottom.
-* **TOGGL_WORKSPACE_ID**: This is a little trickier. Your workspaces usually only show a human-readable name to you in Toggl's UI, and here you need the workspace's machine ID. But you can do a curl request to find it like this (replacing **TOGGL_TOKEN** with your token from above):
-
-    `curl -v -u TOGGL_TOKEN:api_token \ -X GET https://www.toggl.com/api/v8/workspaces`
-
-  Look at the result and find the id given for the workspace you want to use.
-
-* **TOGGL_USER_AGENT**: This is your Toggl username, usually your email.
-* **TOGGL_DEFAULT_LOG_TAG**: This is the tag name you would like to use for tagging your Toggl time entries as they are logged to JIRA.
-* **JIRA_USERNAME**: This is your JIRA username, which can be found in your JIRA user profile.
-* **JIRA_PASSWORD**: I know there's a lot of jargon, but some of these are pretty self-explanatory. :trollface:
 
 ### Mapping keys
 
@@ -124,7 +129,7 @@ You can now map JIRA keys to specific phrases so that in your Toggl time entries
 
 With this mapping, when logging time on on Toggl, instead of having to enter "weekly planning [PM-1]", you can just enter "weekly planning" and the robot will get the JIRA key from the `.time_log_robot_mapping.yml` file.
 
-#### Moving the mapping file
+### Moving the mapping file
 
 If you don't care about keeping your mapping file hidden or out of the way, or if you want it somewhere it can be accessed more easily, feel free to create your own, then just tell the robot where it's located using the `--mapping` flag:
 
@@ -156,7 +161,7 @@ Then open the `my-crontab` in your favorite editor (e.g. `atom my-crontab`) and 
     |     |     +--------- day of        month (1 - 31)
     |     +----------- hour (0 - 23)
     +------------- min (0 - 59)
-    
+
 After editing, save and then “install” your crontab file by giving it to crontab:
 
     crontab my-crontab
@@ -172,15 +177,15 @@ Or ask for help with the `run` command:
     $ time_log_robot run --help
 
 ## Development
-To see available rake tasks for development
+To see available rake tasks for development:
 
     $ rake -T
 
-To run the app in IRB for debugging run
+To run the app in IRB for debugging:
 
     $ rake console
 
-To install your local version
+To install your local version:
 
     $ rake install
 
@@ -196,7 +201,7 @@ Contributions are welcome! See the [Issues](https://github.com/supremebeing7/tim
 4. Make sure all tests pass (`rake test`)
 5. Commit your changes (`git commit -am 'Add some feature'`)
 6. Push to the branch (`git push origin my-new-feature`)
-7. Create new Pull Request to Dev
+7. Create new Pull Request to Master
 
 ## License
 
@@ -205,4 +210,4 @@ This program is provided under an MIT open source license, read the [MIT-LICENSE
 
 ## Copyright
 
-Copyright (c) 2016 Mark J. Lehman
+Copyright (c) 2017 Mark J. Lehman
