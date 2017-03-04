@@ -47,6 +47,25 @@ The simplest usage is just to invoke the robot:
 
     $ time_log_robot
 
+### Configuration
+
+Here are some notes about how to find the appropriate values for those environment variables:
+
+* **TOGGL_TOKEN**: In your Toggl account, go to your profile page and look for the API token at the bottom.
+* **TOGGL_WORKSPACE_ID**: This is a little trickier  You can do a curl request to find it (replacing **TOGGL_TOKEN** with your token value from above):
+
+    `curl -v -u <TOGGL_TOKEN>:api_token https://www.toggl.com/api/v8/workspaces`
+
+    Look at the result at the bottom of the response/`stdout` and find the `id` key and its value:
+
+    ```[{"id":TOGGL_WORKSPACE_ID,"name":"Wreck some code","profile":0,"premium":false,"admin":true,"default_hourly_rate":0,"default_currency":"USD","only_admins_may_create_projects":false,"only_admins_see_billable_rates":false,"only_admins_see_team_dashboard":false,"projects_billable_by_default":true,"rounding":1,"rounding_minutes":0,"api_token":"TOGGL_TOKEN","at":"2016-02-24T01:30:51+00:00","ical_enabled":true}]```
+
+
+* **TOGGL_USER_AGENT**: This is your Toggl username, usually your email.
+* **TOGGL_DEFAULT_LOG_TAG**: This is the tag name you would like to use for tagging your Toggl time entries as they are logged to JIRA.
+* **JIRA_USERNAME**: This is your JIRA username, which can be found in your JIRA user profile.
+* **JIRA_PASSWORD**: I know there's a lot of jargon, but some of these are pretty self-explanatory. :trollface:
+
 #### Format of time entries
 
 Time entries need an issue key (in JIRA, something like `BUG-12`), a start time, and a duration. The robot will try to parse an issue key from the description first, then from the project name, then from the mapping file (see ["Mapping Keys"](#mapping-keys) section).
@@ -95,22 +114,6 @@ The robot has a memory like a steel trap, so after you run it the first time, it
 
 Or, if you want to pop open the internals, the robot saves all configuration in a file in your home directory: `~/.time_log_robot_settings.yml`, so open up that file and edit to your heart's content.
 
-### Configuration
-
-Here are some notes about how to find the appropriate values for those environment variables:
-
-* **TOGGL_TOKEN**: In your Toggl account, go to your profile page and look for the API token at the bottom.
-* **TOGGL_WORKSPACE_ID**: This is a little trickier. Your workspaces usually only show a human-readable name to you in Toggl's UI, and here you need the workspace's machine ID. But you can do a curl request to find it like this (replacing **TOGGL_TOKEN** with your token from above):
-
-    `curl -v -u TOGGL_TOKEN:api_token \ -X GET https://www.toggl.com/api/v8/workspaces`
-
-  Look at the result and find the id given for the workspace you want to use.
-
-* **TOGGL_USER_AGENT**: This is your Toggl username, usually your email.
-* **TOGGL_DEFAULT_LOG_TAG**: This is the tag name you would like to use for tagging your Toggl time entries as they are logged to JIRA.
-* **JIRA_USERNAME**: This is your JIRA username, which can be found in your JIRA user profile.
-* **JIRA_PASSWORD**: I know there's a lot of jargon, but some of these are pretty self-explanatory. :trollface:
-
 ### Mapping keys
 
 You can now map JIRA keys to specific phrases so that in your Toggl time entries, you won't need to enter the JIRA key. These mappings are stored by default in a YAML file in your home directory:
@@ -156,7 +159,7 @@ Then open the `my-crontab` in your favorite editor (e.g. `atom my-crontab`) and 
     |     |     +--------- day of        month (1 - 31)
     |     +----------- hour (0 - 23)
     +------------- min (0 - 59)
-    
+
 After editing, save and then “install” your crontab file by giving it to crontab:
 
     crontab my-crontab
